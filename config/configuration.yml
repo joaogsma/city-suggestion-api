@@ -1,0 +1,9 @@
+server:
+  type: simple
+  connector:
+    type: http
+    port: 8080
+
+template: Hello, %s!
+
+defaultName: ${DW_DEFAULT_NAME:-Stranger}

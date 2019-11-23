@@ -1,0 +1,13 @@
+plugins {
+  id 'application'
+}
+
+application {
+  // Define the main class for the application.
+  mainClassName = 'dropwizard.scaffolding.App'
+}
+
+dependencies {
+  implementation project(':common')
+  implementation project(':core')
+}

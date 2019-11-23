@@ -3,25 +3,25 @@ plugins {
     id 'java'
 
     // Apply the application plugin to add support for building a CLI application.
-    id 'application'
+    //id 'application'
 }
 
-repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
-}
+subprojects {
+    apply plugin: 'java'
 
-dependencies {
-    // This dependency is used by the application.
-    implementation 'com.google.guava:guava:28.0-jre'
-    implementation 'io.dropwizard:dropwizard-core:2.0.0-rc13'
+    repositories {
+        // Use jcenter for resolving dependencies.
+        // You can declare any Maven/Ivy/file repository here.
+        jcenter()
+    }
 
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
-}
+    dependencies {
+        annotationProcessor 'org.immutables:value:2.8.2'
 
-application {
-    // Define the main class for the application.
-    mainClassName = 'dropwizard.scaffolding.App'
+        implementation 'com.google.guava:guava:28.0-jre'
+        implementation 'io.dropwizard:dropwizard-core:2.0.0-rc13'
+        implementation 'org.immutables:value:2.8.2'
+
+        testImplementation 'junit:junit:4.12'
+    }
 }
