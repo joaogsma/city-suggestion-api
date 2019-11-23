@@ -1,12 +1,3 @@
-plugins {
-  id 'application'
-}
-
-application {
-  // Define the main class for the application.
-  mainClassName = 'dropwizard.scaffolding.entrypoint.App'
-}
-
 dependencies {
   implementation project(':common')
   implementation project(':core')
