@@ -1,26 +1,27 @@
 plugins {
-    // Apply the java plugin to add support for Java
     id 'java'
+    id 'com.github.sherter.google-java-format' version '0.8'
+}
 
-    // Apply the application plugin to add support for building a CLI application.
-    //id 'application'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.github.sherter.google-java-format'
+
+    repositories {
+        jcenter()
+    }
 }
 
 subprojects {
-    apply plugin: 'java'
-
-    repositories {
-        // Use jcenter for resolving dependencies.
-        // You can declare any Maven/Ivy/file repository here.
-        jcenter()
-    }
-
     dependencies {
         annotationProcessor 'org.immutables:value:2.8.2'
+        annotationProcessor 'com.google.dagger:dagger-compiler:2.25.2'
 
         implementation 'com.google.guava:guava:28.0-jre'
         implementation 'io.dropwizard:dropwizard-core:2.0.0-rc13'
         implementation 'org.immutables:value:2.8.2'
+        implementation 'com.google.dagger:dagger:2.25.2'
+        implementation 'com.google.googlejavaformat:google-java-format:1.7'
 
         testImplementation 'junit:junit:4.12'
     }
