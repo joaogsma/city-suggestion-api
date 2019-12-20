@@ -33,7 +33,13 @@ subprojects {
         implementation 'com.google.dagger:dagger:2.25.2'
         implementation 'com.google.googlejavaformat:google-java-format:1.7'
 
-        testImplementation 'junit:junit:4.12'
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
+        testImplementation 'org.mockito:mockito-core:3.1.0'
+        testImplementation 'org.mockito:mockito-junit-jupiter:3.1.0'
         testImplementation 'org.assertj:assertj-core:3.14.0'
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
