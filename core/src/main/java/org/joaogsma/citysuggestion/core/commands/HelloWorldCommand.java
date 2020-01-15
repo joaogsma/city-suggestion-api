@@ -1,4 +1,4 @@
-package dropwizard.scaffolding.core.commands;
+package org.joaogsma.citysuggestion.core.commands;
 
 import javax.inject.Inject;
 

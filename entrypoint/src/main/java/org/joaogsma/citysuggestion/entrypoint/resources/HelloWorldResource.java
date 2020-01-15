@@ -1,4 +1,4 @@
-package dropwizard.scaffolding.entrypoint.resources;
+package org.joaogsma.citysuggestion.entrypoint.resources;
 
 import com.google.common.base.Predicates;
 import java.util.Optional;

@@ -1,8 +1,8 @@
-package dropwizard.scaffolding.entrypoint.modules;
+package org.joaogsma.citysuggestion.entrypoint.modules;
 
 import dagger.Module;
 import dagger.Provides;
-import dropwizard.scaffolding.common.config.CommonConfig;
+import org.joaogsma.citysuggestion.common.config.CommonConfig;
 
 @Module
 public class ConfigurationModule {

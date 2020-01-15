@@ -1,4 +1,4 @@
-package dropwizard.scaffolding.common.config;
+package org.joaogsma.citysuggestion.common.config;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dropwizard.Configuration;

@@ -6,7 +6,7 @@ plugins {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'dropwizard.scaffolding.entrypoint.Application'
+    mainClassName = 'org.joaogsma.citysuggestion.entrypoint.Application'
 }
 
 dependencies {

@@ -1,9 +1,9 @@
-package dropwizard.scaffolding.entrypoint;
+package org.joaogsma.citysuggestion.entrypoint;
 
-import dropwizard.scaffolding.common.config.CommonConfig;
-import dropwizard.scaffolding.common.config.ImmutableCommonConfig;
-import dropwizard.scaffolding.entrypoint.modules.ConfigurationModule;
 import io.dropwizard.setup.Environment;
+import org.joaogsma.citysuggestion.common.config.CommonConfig;
+import org.joaogsma.citysuggestion.common.config.ImmutableCommonConfig;
+import org.joaogsma.citysuggestion.entrypoint.modules.ConfigurationModule;
 
 public class Application extends io.dropwizard.Application<CommonConfig> {
   public static void main(String[] args) throws Exception {
