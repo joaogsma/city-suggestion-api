@@ -1,5 +1,4 @@
-rootProject.name = 'dropwizard-scaffolding'
+rootProject.name = 'city-suggestion-api'
 include 'common'
 include 'core'
 include 'entrypoint'
-include 'external'
