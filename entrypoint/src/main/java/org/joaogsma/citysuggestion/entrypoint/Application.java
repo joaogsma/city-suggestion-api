@@ -18,8 +18,8 @@ public class Application extends io.dropwizard.Application<CommonConfig> {
                 new ConfigurationModule(ImmutableCommonConfig.builder().foo("xalala").build()))
             .build();
 
-    System.out.println("HERE");
+    System.out.println(component.resources().size());
 
-    environment.jersey().register(component.helloWorldResource());
+    component.resources().forEach(environment.jersey()::register);
   }
 }
