@@ -6,14 +6,23 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableSuggestion.class)
-public interface Suggestion {
-  String name();
+public abstract class Suggestion {
+  public abstract String name();
 
   @JsonProperty("latitude")
-  double lat();
+  public abstract double lat();
 
   @JsonProperty("longitude")
-  double lng();
+  public abstract double lng();
 
-  double score();
+  public abstract double score();
+
+  public static Suggestion of(City city, double score) {
+    return ImmutableSuggestion.builder()
+        .name(city.name())
+        .lat(city.lat())
+        .lng(city.lng())
+        .score(score)
+        .build();
+  }
 }
