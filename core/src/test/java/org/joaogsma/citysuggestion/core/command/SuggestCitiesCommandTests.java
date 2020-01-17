@@ -11,11 +11,12 @@ import com.google.common.collect.ImmutableList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.joaogsma.citysuggestion.core.actions.AggregateScoresAction;
 import org.joaogsma.citysuggestion.core.actions.FindCandidateCitiesAction;
+import org.joaogsma.citysuggestion.core.actions.MergeScoresAction;
 import org.joaogsma.citysuggestion.core.actions.ScoreCitiesByCoordinatesAction;
 import org.joaogsma.citysuggestion.core.actions.ScoreCitiesByNameAction;
 import org.joaogsma.citysuggestion.core.commands.SuggestCitiesCommand;
+import org.joaogsma.citysuggestion.core.fixtures.CoordinateScoresFixture;
 import org.joaogsma.citysuggestion.core.fixtures.FinalScoresFixture;
 import org.joaogsma.citysuggestion.core.fixtures.InputFixture;
 import org.joaogsma.citysuggestion.core.fixtures.NameScoresFixture;
@@ -36,15 +37,15 @@ public class SuggestCitiesCommandTests {
   private final double LNG = InputFixture.buildLng();
   private final Map<City, Double> FINAL_SCORES = FinalScoresFixture.build();
   private final List<Suggestion> SUGGESTIONS = SuggestionFixture.buildList();
+  private Map<City, Double> NAME_SCORES = NameScoresFixture.build();
+  private Map<City, Double> COORDINATES_SCORES = CoordinateScoresFixture.build();
   @Mock private List<City> CITIES;
   @Mock private Iterator<City> CITIES_ITERATOR;
-  @Mock private Map<City, Double> NAME_SCORES;
-  @Mock private Map<City, Double> COORDINATES_SCORES;
 
   @Mock private FindCandidateCitiesAction findCandidateCitiesAction;
   @Mock private ScoreCitiesByNameAction scoreCitiesByNameAction;
   @Mock private ScoreCitiesByCoordinatesAction scoreCitiesByCoordinatesAction;
-  @Mock private AggregateScoresAction aggregateScoresAction;
+  @Mock private MergeScoresAction mergeScoresAction;
   @InjectMocks SuggestCitiesCommand command;
 
   @Test
@@ -54,7 +55,7 @@ public class SuggestCitiesCommandTests {
     when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
     when(scoreCitiesByCoordinatesAction.call(CITIES_ITERATOR, LAT, LNG))
         .thenReturn(COORDINATES_SCORES);
-    when(aggregateScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
+    when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
     assertThat(command.call(SEARCH_TERM, LAT, LNG)).isEqualTo(SUGGESTIONS);
 
@@ -62,7 +63,7 @@ public class SuggestCitiesCommandTests {
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
     verify(scoreCitiesByNameAction).call(CITIES.iterator());
     verify(scoreCitiesByCoordinatesAction).call(CITIES_ITERATOR, LAT, LNG);
-    verify(aggregateScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
+    verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
 
   @Test
@@ -72,7 +73,7 @@ public class SuggestCitiesCommandTests {
     when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
     when(scoreCitiesByCoordinatesAction.call(CITIES_ITERATOR, LAT, null))
         .thenReturn(COORDINATES_SCORES);
-    when(aggregateScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
+    when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
     assertThat(command.call(SEARCH_TERM, LAT, null)).isEqualTo(SUGGESTIONS);
 
@@ -80,7 +81,7 @@ public class SuggestCitiesCommandTests {
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
     verify(scoreCitiesByNameAction).call(CITIES.iterator());
     verify(scoreCitiesByCoordinatesAction).call(CITIES_ITERATOR, LAT, null);
-    verify(aggregateScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
+    verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
 
   @Test
@@ -90,7 +91,7 @@ public class SuggestCitiesCommandTests {
     when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
     when(scoreCitiesByCoordinatesAction.call(CITIES_ITERATOR, null, LNG))
         .thenReturn(COORDINATES_SCORES);
-    when(aggregateScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
+    when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
     assertThat(command.call(SEARCH_TERM, null, LNG)).isEqualTo(SUGGESTIONS);
 
@@ -98,17 +99,17 @@ public class SuggestCitiesCommandTests {
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
     verify(scoreCitiesByNameAction).call(CITIES.iterator());
     verify(scoreCitiesByCoordinatesAction).call(CITIES_ITERATOR, null, LNG);
-    verify(aggregateScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
+    verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
 
   @Test
   void whenBothCoordinatesAreMissing_shouldNotScoreByCoordinates() {
     when(CITIES.iterator()).thenReturn(CITIES_ITERATOR);
     when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES);
-    when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(FINAL_SCORES);
+    when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
 
     final List<Suggestion> expected =
-        NameScoresFixture.build()
+        NAME_SCORES
             .entrySet()
             .stream()
             .map(entry -> ImmutableSuggestion.of(entry.getKey(), entry.getValue()))
@@ -119,6 +120,6 @@ public class SuggestCitiesCommandTests {
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
     verify(scoreCitiesByNameAction).call(CITIES_ITERATOR);
     verify(scoreCitiesByCoordinatesAction, never()).call(any(), any(), any());
-    verify(aggregateScoresAction, never()).call(any(), any());
+    verify(mergeScoresAction, never()).call(any(), any());
   }
 }

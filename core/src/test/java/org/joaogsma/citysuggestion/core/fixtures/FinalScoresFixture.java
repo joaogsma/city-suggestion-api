@@ -8,7 +8,7 @@ import java.util.Map;
 import org.joaogsma.citysuggestion.core.models.City;
 
 public class FinalScoresFixture {
-  private static final Double[] SCORE_VALUES = {0.9, 0.5};
+  private static final Double[] SCORE_VALUES = {0.9499749305159372, 0.740259022223247};
   private static final Map<City, Double> SCORES =
       Streams.zip(
               CityFixture.buildList().stream(),
