@@ -12,6 +12,7 @@ public class MergeScoresAction {
   @Inject
   MergeScoresAction() {}
 
+  /** Computes the final score as the mean of both scores */
   public Map<City, Double> call(Map<City, Double> nameScores, Map<City, Double> coordinateScores) {
     Preconditions.checkArgument(
         nameScores.keySet().equals(coordinateScores.keySet()),
