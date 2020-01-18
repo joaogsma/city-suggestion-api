@@ -2,20 +2,23 @@ package org.joaogsma.citysuggestion.core.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.joaogsma.citysuggestion.core.actions.FindCandidateCitiesAction;
 import org.joaogsma.citysuggestion.core.actions.MergeScoresAction;
 import org.joaogsma.citysuggestion.core.actions.ScoreCitiesByCoordinatesAction;
 import org.joaogsma.citysuggestion.core.actions.ScoreCitiesByNameAction;
 import org.joaogsma.citysuggestion.core.commands.SuggestCitiesCommand;
+import org.joaogsma.citysuggestion.core.fixtures.CityFixture;
 import org.joaogsma.citysuggestion.core.fixtures.CoordinateScoresFixture;
 import org.joaogsma.citysuggestion.core.fixtures.FinalScoresFixture;
 import org.joaogsma.citysuggestion.core.fixtures.InputFixture;
@@ -39,8 +42,8 @@ public class SuggestCitiesCommandTests {
   private final List<Suggestion> SUGGESTIONS = SuggestionFixture.buildList();
   private Map<City, Double> NAME_SCORES = NameScoresFixture.build();
   private Map<City, Double> COORDINATES_SCORES = CoordinateScoresFixture.build();
-  @Mock private List<City> CITIES;
-  @Mock private Iterator<City> CITIES_ITERATOR;
+  private List<City> CITIES = spy(CityFixture.buildList());
+  @Mock private Stream<City> CITIES_STREAM;
 
   @Mock private FindCandidateCitiesAction findCandidateCitiesAction;
   @Mock private ScoreCitiesByNameAction scoreCitiesByNameAction;
@@ -50,63 +53,71 @@ public class SuggestCitiesCommandTests {
 
   @Test
   void whenBothLatAndLngArePresent_shouldCallAllActions() {
-    when(CITIES.iterator()).thenReturn(CITIES_ITERATOR);
-    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES);
-    when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
-    when(scoreCitiesByCoordinatesAction.call(CITIES_ITERATOR, LAT, LNG))
+    when(CITIES_STREAM.collect(any())).thenReturn(CITIES);
+    doReturn(CITIES_STREAM).when(CITIES).stream();
+
+    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, LAT, LNG))
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
     assertThat(command.call(SEARCH_TERM, LAT, LNG)).isEqualTo(SUGGESTIONS);
 
-    verify(CITIES, times(2)).iterator();
+    verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES.iterator());
-    verify(scoreCitiesByCoordinatesAction).call(CITIES_ITERATOR, LAT, LNG);
+    verify(scoreCitiesByNameAction).call(CITIES.stream());
+    verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, LAT, LNG);
     verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
 
   @Test
   void whenLngIsMissing_shouldCallAllActions() {
-    when(CITIES.iterator()).thenReturn(CITIES_ITERATOR);
-    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES);
-    when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
-    when(scoreCitiesByCoordinatesAction.call(CITIES_ITERATOR, LAT, null))
+    when(CITIES_STREAM.collect(any())).thenReturn(CITIES);
+    doReturn(CITIES_STREAM).when(CITIES).stream();
+
+    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, LAT, null))
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
     assertThat(command.call(SEARCH_TERM, LAT, null)).isEqualTo(SUGGESTIONS);
 
-    verify(CITIES, times(2)).iterator();
+    verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES.iterator());
-    verify(scoreCitiesByCoordinatesAction).call(CITIES_ITERATOR, LAT, null);
+    verify(scoreCitiesByNameAction).call(CITIES.stream());
+    verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, LAT, null);
     verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
 
   @Test
   void whenLatIsMissing_shouldCallAllActions() {
-    when(CITIES.iterator()).thenReturn(CITIES_ITERATOR);
-    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES);
-    when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
-    when(scoreCitiesByCoordinatesAction.call(CITIES_ITERATOR, null, LNG))
+    when(CITIES_STREAM.collect(any())).thenReturn(CITIES);
+    doReturn(CITIES_STREAM).when(CITIES).stream();
+
+    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, null, LNG))
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
     assertThat(command.call(SEARCH_TERM, null, LNG)).isEqualTo(SUGGESTIONS);
 
-    verify(CITIES, times(2)).iterator();
+    verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES.iterator());
-    verify(scoreCitiesByCoordinatesAction).call(CITIES_ITERATOR, null, LNG);
+    verify(scoreCitiesByNameAction).call(CITIES.stream());
+    verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, null, LNG);
     verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
 
   @Test
   void whenBothCoordinatesAreMissing_shouldNotScoreByCoordinates() {
-    when(CITIES.iterator()).thenReturn(CITIES_ITERATOR);
-    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES);
-    when(scoreCitiesByNameAction.call(CITIES_ITERATOR)).thenReturn(NAME_SCORES);
+    when(CITIES_STREAM.collect(any())).thenReturn(CITIES);
+    doReturn(CITIES_STREAM).when(CITIES).stream();
+
+    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
 
     final List<Suggestion> expected =
         NAME_SCORES
@@ -116,9 +127,9 @@ public class SuggestCitiesCommandTests {
             .collect(ImmutableList.toImmutableList());
     assertThat(command.call(SEARCH_TERM, null, null)).isEqualTo(expected);
 
-    verify(CITIES).iterator();
+    verify(CITIES).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES_ITERATOR);
+    verify(scoreCitiesByNameAction).call(CITIES_STREAM);
     verify(scoreCitiesByCoordinatesAction, never()).call(any(), any(), any());
     verify(mergeScoresAction, never()).call(any(), any());
   }

@@ -31,8 +31,9 @@ public class SuggestCitiesCommand {
   }
 
   public List<Suggestion> call(String searchTerm, Double lat, Double lng) {
-    final List<City> cities = findCandidateCitiesAction.call(searchTerm);
-    final Map<City, Double> nameScores = scoreCitiesByNameAction.call(cities.iterator());
+    final List<City> cities =
+        findCandidateCitiesAction.call(searchTerm).collect(ImmutableList.toImmutableList());
+    final Map<City, Double> nameScores = scoreCitiesByNameAction.call(cities.stream());
 
     if (lat == null && lng == null) {
       return nameScores
@@ -43,7 +44,7 @@ public class SuggestCitiesCommand {
     }
 
     final Map<City, Double> coordinateScores =
-        scoreCitiesByCoordinatesAction.call(cities.iterator(), lat, lng);
+        scoreCitiesByCoordinatesAction.call(cities.stream(), lat, lng);
     final Map<City, Double> finalScores = mergeScoresAction.call(nameScores, coordinateScores);
     return finalScores
         .entrySet()

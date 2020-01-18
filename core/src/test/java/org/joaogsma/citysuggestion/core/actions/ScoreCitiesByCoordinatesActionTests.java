@@ -22,7 +22,7 @@ public class ScoreCitiesByCoordinatesActionTests {
   @Test
   void shouldComputeTheScores() {
     final Comparator<Double> closeEnough = (a, b) -> Math.abs(a - b) <= 1e-6 ? 0 : 1;
-    assertThat(action.call(CITIES.iterator(), LAT, LNG))
+    assertThat(action.call(CITIES.stream(), LAT, LNG))
         .usingComparatorForType(closeEnough, Double.class)
         .isEqualToComparingFieldByField(COORDINATE_SCORES);
   }
