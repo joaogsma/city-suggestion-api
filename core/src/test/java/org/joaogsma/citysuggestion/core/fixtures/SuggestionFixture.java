@@ -8,7 +8,7 @@ import org.joaogsma.citysuggestion.core.models.ImmutableSuggestion;
 import org.joaogsma.citysuggestion.core.models.Suggestion;
 
 public class SuggestionFixture {
-  private static Double[] SCORE_VALUES = {0.9, 0.5};
+  private static final Double[] SCORE_VALUES = {0.9499749305159372, 0.740259022223247};
   private static final List<Suggestion> SUGGESTIONS =
       Streams.zip(
               CityFixture.buildList().stream(),
