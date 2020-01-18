@@ -33,7 +33,7 @@ public class SuggestCitiesCommand {
   public List<Suggestion> call(String searchTerm, Double lat, Double lng) {
     final List<City> cities =
         findCandidateCitiesAction.call(searchTerm).collect(ImmutableList.toImmutableList());
-    final Map<City, Double> nameScores = scoreCitiesByNameAction.call(cities.stream());
+    final Map<City, Double> nameScores = scoreCitiesByNameAction.call(cities.stream(), searchTerm);
 
     if (lat == null && lng == null) {
       return nameScores

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.joaogsma.citysuggestion.core.fixtures.CityFixture;
 import org.joaogsma.citysuggestion.core.fixtures.CoordinateScoresFixture;
 import org.joaogsma.citysuggestion.core.fixtures.InputFixture;
@@ -18,6 +19,11 @@ public class ScoreCitiesByCoordinatesActionTests {
   private final Map<City, Double> COORDINATE_SCORES = CoordinateScoresFixture.build();
 
   private final ScoreCitiesByCoordinatesAction action = new ScoreCitiesByCoordinatesAction();
+
+  @Test
+  void whenInputIsEmpty_shouldReturnAnEmptyMap() {
+    assertThat(action.call(Stream.empty(), LAT, LNG)).isEmpty();
+  }
 
   @Test
   void shouldComputeTheScores() {

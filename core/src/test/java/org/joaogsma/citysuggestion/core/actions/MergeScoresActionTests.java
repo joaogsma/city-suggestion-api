@@ -19,6 +19,11 @@ public class MergeScoresActionTests {
   private final MergeScoresAction action = new MergeScoresAction();
 
   @Test
+  void whenTheInputsAreEmpty_shouldReturnAnEmptyMap() {
+    assertThat(action.call(ImmutableMap.of(), ImmutableMap.of())).isEmpty();
+  }
+
+  @Test
   void shouldComputeTheMeanOfTheScores() {
     assertThat(action.call(NAME_SCORES, COORDINATE_SCORES)).isEqualTo(FINAL_SCORES);
   }

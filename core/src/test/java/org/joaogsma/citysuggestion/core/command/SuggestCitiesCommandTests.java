@@ -57,7 +57,7 @@ public class SuggestCitiesCommandTests {
     doReturn(CITIES_STREAM).when(CITIES).stream();
 
     when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
-    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM, SEARCH_TERM)).thenReturn(NAME_SCORES);
     when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, LAT, LNG))
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
@@ -66,7 +66,7 @@ public class SuggestCitiesCommandTests {
 
     verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES.stream());
+    verify(scoreCitiesByNameAction).call(CITIES_STREAM, SEARCH_TERM);
     verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, LAT, LNG);
     verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
@@ -77,7 +77,7 @@ public class SuggestCitiesCommandTests {
     doReturn(CITIES_STREAM).when(CITIES).stream();
 
     when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
-    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM, SEARCH_TERM)).thenReturn(NAME_SCORES);
     when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, LAT, null))
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
@@ -86,7 +86,7 @@ public class SuggestCitiesCommandTests {
 
     verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES.stream());
+    verify(scoreCitiesByNameAction).call(CITIES_STREAM, SEARCH_TERM);
     verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, LAT, null);
     verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
@@ -97,7 +97,7 @@ public class SuggestCitiesCommandTests {
     doReturn(CITIES_STREAM).when(CITIES).stream();
 
     when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
-    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM, SEARCH_TERM)).thenReturn(NAME_SCORES);
     when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, null, LNG))
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
@@ -106,7 +106,7 @@ public class SuggestCitiesCommandTests {
 
     verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES.stream());
+    verify(scoreCitiesByNameAction).call(CITIES_STREAM, SEARCH_TERM);
     verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, null, LNG);
     verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
   }
@@ -117,7 +117,7 @@ public class SuggestCitiesCommandTests {
     doReturn(CITIES_STREAM).when(CITIES).stream();
 
     when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
-    when(scoreCitiesByNameAction.call(CITIES_STREAM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM, SEARCH_TERM)).thenReturn(NAME_SCORES);
 
     final List<Suggestion> expected =
         NAME_SCORES
@@ -129,7 +129,7 @@ public class SuggestCitiesCommandTests {
 
     verify(CITIES).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
-    verify(scoreCitiesByNameAction).call(CITIES_STREAM);
+    verify(scoreCitiesByNameAction).call(CITIES_STREAM, SEARCH_TERM);
     verify(scoreCitiesByCoordinatesAction, never()).call(any(), any(), any());
     verify(mergeScoresAction, never()).call(any(), any());
   }
