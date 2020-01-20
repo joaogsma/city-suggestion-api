@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -50,6 +51,32 @@ public class SuggestCitiesCommandTests {
   @Mock private ScoreCitiesByCoordinatesAction scoreCitiesByCoordinatesAction;
   @Mock private MergeScoresAction mergeScoresAction;
   @InjectMocks SuggestCitiesCommand command;
+
+  @Test
+  void shouldReturnOrderedResults() {
+    when(CITIES_STREAM.collect(any())).thenReturn(CITIES);
+    doReturn(CITIES_STREAM).when(CITIES).stream();
+
+    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM, SEARCH_TERM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, LAT, LNG))
+        .thenReturn(COORDINATES_SCORES);
+    when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
+
+    final List<Suggestion> suggestions = command.call(SEARCH_TERM, LAT, LNG);
+    final List<Suggestion> orderedSuggestions =
+        suggestions
+            .stream()
+            .sorted(Comparator.comparingDouble(Suggestion::score).reversed())
+            .collect(ImmutableList.toImmutableList());
+    assertThat(orderedSuggestions).containsExactlyElementsOf(suggestions);
+
+    verify(CITIES, times(2)).stream();
+    verify(findCandidateCitiesAction).call(SEARCH_TERM);
+    verify(scoreCitiesByNameAction).call(CITIES_STREAM, SEARCH_TERM);
+    verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, LAT, LNG);
+    verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
+  }
 
   @Test
   void whenBothLatAndLngArePresent_shouldCallAllActions() {
