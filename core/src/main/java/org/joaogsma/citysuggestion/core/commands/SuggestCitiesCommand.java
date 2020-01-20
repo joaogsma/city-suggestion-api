@@ -1,6 +1,7 @@
 package org.joaogsma.citysuggestion.core.commands;
 
 import com.google.common.collect.ImmutableList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -50,6 +51,7 @@ public class SuggestCitiesCommand {
         .entrySet()
         .stream()
         .map(entry -> ImmutableSuggestion.of(entry.getKey(), entry.getValue()))
+        .sorted(Comparator.comparingDouble(Suggestion::score).reversed())
         .collect(ImmutableList.toImmutableList());
   }
 }
