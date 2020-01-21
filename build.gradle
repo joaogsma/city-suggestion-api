@@ -9,6 +9,10 @@ application {
     mainClassName = 'org.joaogsma.citysuggestion.entrypoint.Application'
 }
 
+run {
+    args 'server', 'config/configuration.yml'
+}
+
 dependencies {
     runtime project(':entrypoint')
 }
