@@ -19,6 +19,6 @@ public class FindCandidateCitiesAction {
 
   public Stream<City> call(String searchTerm) {
     final Set<String> trigrams = extractTrigramsFn.apply(searchTerm);
-    return facade.get(trigrams.stream());
+    return facade.get(trigrams.stream()).stream();
   }
 }
