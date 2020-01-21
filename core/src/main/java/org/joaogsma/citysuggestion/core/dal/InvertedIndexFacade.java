@@ -9,7 +9,7 @@ public class InvertedIndexFacade {
   private final InvertedIndex<String, City> index;
 
   @Inject
-  InvertedIndexFacade(InvertedIndex<String, City> index) {
+  public InvertedIndexFacade(InvertedIndex<String, City> index) {
     this.index = index;
   }
 

@@ -20,7 +20,7 @@ public class SuggestCitiesCommand {
   private final MergeScoresAction mergeScoresAction;
 
   @Inject
-  SuggestCitiesCommand(
+  public SuggestCitiesCommand(
       FindCandidateCitiesAction findCandidateCitiesAction,
       ScoreCitiesByNameAction scoreCitiesByNameAction,
       ScoreCitiesByCoordinatesAction scoreCitiesByCoordinatesAction,

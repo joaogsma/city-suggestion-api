@@ -29,7 +29,7 @@ public class SuggestionsResource implements Resource {
   private final SuggestCitiesCommand command;
 
   @Inject
-  SuggestionsResource(SuggestCitiesCommand command) {
+  public SuggestionsResource(SuggestCitiesCommand command) {
     this.command = command;
   }
 

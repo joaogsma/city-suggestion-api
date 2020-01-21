@@ -10,10 +10,7 @@ import org.joaogsma.citysuggestion.core.fixtures.TrigramFixture;
 import org.joaogsma.citysuggestion.core.models.City;
 import org.joaogsma.citysuggestion.core.text.ExtractTrigramsFunction;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 public class InvertedIndexModuleTests {
   private static final Map<City, Set<String>> CITY_TRIGRAMS = TrigramFixture.buildCItyTrigramMap();
 
