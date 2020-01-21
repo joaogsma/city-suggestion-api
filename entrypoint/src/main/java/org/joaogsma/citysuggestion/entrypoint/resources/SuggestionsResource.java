@@ -14,14 +14,19 @@ import org.joaogsma.citysuggestion.core.commands.SuggestCitiesCommand;
 import org.joaogsma.citysuggestion.core.models.Suggestion;
 import org.joaogsma.citysuggestion.entrypoint.models.ImmutableSuggestionsResponse;
 import org.joaogsma.citysuggestion.entrypoint.models.SuggestionsResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path(SuggestionsResource.PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class SuggestionsResource implements Resource {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsResource.class);
   public static final String PATH = "/suggestions";
   public static final String SEARCH_TERM_QUERY_PARAM = "q";
   public static final String LAT_QUERY_PARAM = "latitude";
   public static final String LNG_QUERY_PARAM = "longitude";
+  public static final String OFFSET_QUERY_PARAM = "offset";
+  public static final String LIMIT_QUERY_PARAM = "limit";
 
   private static final int MAX_LAT = 90;
   private static final int MAX_LNG = 180;
@@ -37,12 +42,23 @@ public class SuggestionsResource implements Resource {
   public SuggestionsResponse get(
       @QueryParam(SEARCH_TERM_QUERY_PARAM) @NotEmpty String searchTerm,
       @QueryParam(LAT_QUERY_PARAM) @Min(-MAX_LAT) @Max(MAX_LAT) Double lat,
-      @QueryParam(LNG_QUERY_PARAM) @Min(-MAX_LNG) @Max(MAX_LNG) Double lng) {
-    System.out.println(
+      @QueryParam(LNG_QUERY_PARAM) @Min(-MAX_LNG) @Max(MAX_LNG) Double lng,
+      @QueryParam(OFFSET_QUERY_PARAM) @Min(0) @Max(Integer.MAX_VALUE) Integer offset,
+      @QueryParam(LIMIT_QUERY_PARAM) @Min(0) @Max(Integer.MAX_VALUE) Integer limit) {
+    LOGGER.info(
         String.format(
-            "Received request with params %s=%s, %s=%s, %s=%s}",
-            SEARCH_TERM_QUERY_PARAM, searchTerm, LAT_QUERY_PARAM, lat, LNG_QUERY_PARAM, lng));
-    final List<Suggestion> suggestions = command.call(searchTerm, lat, lng);
+            "Received request with params %s=%s, %s=%s, %s=%s, %s=%s, %s=%s}",
+            SEARCH_TERM_QUERY_PARAM,
+            searchTerm,
+            LAT_QUERY_PARAM,
+            lat,
+            LNG_QUERY_PARAM,
+            lng,
+            OFFSET_QUERY_PARAM,
+            offset,
+            LIMIT_QUERY_PARAM,
+            limit));
+    final List<Suggestion> suggestions = command.call(searchTerm, lat, lng, offset, limit);
     return ImmutableSuggestionsResponse.builder().suggestions(suggestions).build();
   }
 }

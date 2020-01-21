@@ -1,7 +1,6 @@
 package org.joaogsma.citysuggestion.entrypoint.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,6 +21,8 @@ class SuggestionsResourceTests {
   private static final String SEARCH_TERM = "lon";
   private static final double LAT = 42.98339;
   private static final double LNG = -81.23304;
+  private static final int OFFSET = 0;
+  private static final int LIMIT = 20;
   private static final List<Suggestion> SUGGESTIONS = SuggestionFixture.buildList();
   private static final SuggestionsResponse SUGGESTIONS_RESPONSE =
       SuggestionsResponseFixture.build();
@@ -31,8 +32,8 @@ class SuggestionsResourceTests {
 
   @Test
   void getShouldCallCommand() {
-    when(command.call(any(), any(), any())).thenReturn(SUGGESTIONS);
-    assertThat(resource.get(SEARCH_TERM, LAT, LNG)).isEqualTo(SUGGESTIONS_RESPONSE);
-    verify(command).call(SEARCH_TERM, LAT, LNG);
+    when(command.call(SEARCH_TERM, LAT, LNG, OFFSET, LIMIT)).thenReturn(SUGGESTIONS);
+    assertThat(resource.get(SEARCH_TERM, LAT, LNG, OFFSET, LIMIT)).isEqualTo(SUGGESTIONS_RESPONSE);
+    verify(command).call(SEARCH_TERM, LAT, LNG, OFFSET, LIMIT);
   }
 }
