@@ -21,7 +21,8 @@ public class FindCandidateCitiesActionTests {
   private String SEARCH_TERM = InputFixture.buildSearchTerm();
   @Mock private Set<String> TRIGRAMS;
   @Mock private Stream<String> TRIGRAM_STREAM;
-  @Mock private Stream<City> CITY_STREAM;
+  @Mock private Set<City> CITIES;
+  @Mock private Stream<City> CITIES_STREAM;
 
   @Mock private ExtractTrigramsFunction extractTrigramsFn;
   @Mock private InvertedIndexFacade facade;
@@ -31,11 +32,14 @@ public class FindCandidateCitiesActionTests {
   void shouldCallTheFacade() {
     when(extractTrigramsFn.apply(SEARCH_TERM)).thenReturn(TRIGRAMS);
     when(TRIGRAMS.stream()).thenReturn(TRIGRAM_STREAM);
-    when(facade.get(TRIGRAM_STREAM)).thenReturn(CITY_STREAM);
+    when(facade.get(TRIGRAM_STREAM)).thenReturn(CITIES);
+    when(CITIES.stream()).thenReturn(CITIES_STREAM);
 
-    assertThat(action.call(SEARCH_TERM)).isEqualTo(CITY_STREAM);
+    assertThat(action.call(SEARCH_TERM)).isEqualTo(CITIES_STREAM);
 
     verify(extractTrigramsFn).apply(SEARCH_TERM);
+    verify(TRIGRAMS).stream();
     verify(facade).get(TRIGRAM_STREAM);
+    verify(CITIES).stream();
   }
 }

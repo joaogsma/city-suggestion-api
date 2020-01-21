@@ -15,7 +15,7 @@ import javax.inject.Inject;
  */
 public class ExtractTrigramsFunction implements Function<String, Set<String>> {
   @Inject
-  ExtractTrigramsFunction() {}
+  public ExtractTrigramsFunction() {}
 
   @Override
   public Set<String> apply(String str) {

@@ -10,7 +10,7 @@ import org.joaogsma.citysuggestion.core.models.City;
 
 public class MergeScoresAction {
   @Inject
-  MergeScoresAction() {}
+  public MergeScoresAction() {}
 
   /** Computes the final score as the mean of both scores */
   public Map<City, Double> call(Map<City, Double> nameScores, Map<City, Double> coordinateScores) {

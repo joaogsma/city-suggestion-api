@@ -15,7 +15,7 @@ public class ScoreCitiesByNameAction {
   private final TrigramSimilarityFunction similarityFn;
 
   @Inject
-  ScoreCitiesByNameAction(
+  public ScoreCitiesByNameAction(
       ExtractTrigramsFunction extractTrigramsFn, TrigramSimilarityFunction trigramSimilarityFn) {
     trigramsOf = extractTrigramsFn;
     similarityFn = trigramSimilarityFn;

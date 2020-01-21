@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 public class TrigramSimilarityFunction implements BiFunction<Set<String>, Set<String>, Double> {
   @Inject
-  TrigramSimilarityFunction() {}
+  public TrigramSimilarityFunction() {}
 
   @Override
   public Double apply(Set<String> trigrams1, Set<String> trigrams2) {

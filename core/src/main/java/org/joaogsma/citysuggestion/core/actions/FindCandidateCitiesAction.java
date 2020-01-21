@@ -12,13 +12,14 @@ public class FindCandidateCitiesAction {
   private final ExtractTrigramsFunction extractTrigramsFn;
 
   @Inject
-  FindCandidateCitiesAction(InvertedIndexFacade facade, ExtractTrigramsFunction extractTrigramsFn) {
+  public FindCandidateCitiesAction(
+      InvertedIndexFacade facade, ExtractTrigramsFunction extractTrigramsFn) {
     this.facade = facade;
     this.extractTrigramsFn = extractTrigramsFn;
   }
 
   public Stream<City> call(String searchTerm) {
     final Set<String> trigrams = extractTrigramsFn.apply(searchTerm);
-    return facade.get(trigrams.stream());
+    return facade.get(trigrams.stream()).stream();
   }
 }

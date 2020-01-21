@@ -14,7 +14,7 @@ public class ScoreCitiesByCoordinatesAction {
   private static final double EARTH_CIRCUMFERENCE_IN_METERS = 40075000.0;
 
   @Inject
-  ScoreCitiesByCoordinatesAction() {}
+  public ScoreCitiesByCoordinatesAction() {}
 
   public Map<City, Double> call(Stream<City> cities, Double lat, Double lng) {
     return cities.collect(
