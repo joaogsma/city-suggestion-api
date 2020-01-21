@@ -63,13 +63,33 @@ public class SuggestCitiesCommandTests {
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
-    final List<Suggestion> suggestions = command.call(SEARCH_TERM, LAT, LNG);
+    final List<Suggestion> suggestions = command.call(SEARCH_TERM, LAT, LNG, null, null);
     final List<Suggestion> orderedSuggestions =
         suggestions
             .stream()
             .sorted(Comparator.comparingDouble(Suggestion::score).reversed())
             .collect(ImmutableList.toImmutableList());
     assertThat(orderedSuggestions).containsExactlyElementsOf(suggestions);
+
+    verify(CITIES, times(2)).stream();
+    verify(findCandidateCitiesAction).call(SEARCH_TERM);
+    verify(scoreCitiesByNameAction).call(CITIES_STREAM, SEARCH_TERM);
+    verify(scoreCitiesByCoordinatesAction).call(CITIES_STREAM, LAT, LNG);
+    verify(mergeScoresAction).call(NAME_SCORES, COORDINATES_SCORES);
+  }
+
+  @Test
+  void shouldPaginateResults() {
+    when(CITIES_STREAM.collect(any())).thenReturn(CITIES);
+    doReturn(CITIES_STREAM).when(CITIES).stream();
+
+    when(findCandidateCitiesAction.call(SEARCH_TERM)).thenReturn(CITIES_STREAM);
+    when(scoreCitiesByNameAction.call(CITIES_STREAM, SEARCH_TERM)).thenReturn(NAME_SCORES);
+    when(scoreCitiesByCoordinatesAction.call(CITIES_STREAM, LAT, LNG))
+        .thenReturn(COORDINATES_SCORES);
+    when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
+
+    assertThat(command.call(SEARCH_TERM, LAT, LNG, 1, 1)).isEqualTo(SUGGESTIONS.subList(1, 2));
 
     verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
@@ -89,7 +109,7 @@ public class SuggestCitiesCommandTests {
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
-    assertThat(command.call(SEARCH_TERM, LAT, LNG)).isEqualTo(SUGGESTIONS);
+    assertThat(command.call(SEARCH_TERM, LAT, LNG, null, null)).isEqualTo(SUGGESTIONS);
 
     verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
@@ -109,7 +129,7 @@ public class SuggestCitiesCommandTests {
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
-    assertThat(command.call(SEARCH_TERM, LAT, null)).isEqualTo(SUGGESTIONS);
+    assertThat(command.call(SEARCH_TERM, LAT, null, null, null)).isEqualTo(SUGGESTIONS);
 
     verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
@@ -129,7 +149,7 @@ public class SuggestCitiesCommandTests {
         .thenReturn(COORDINATES_SCORES);
     when(mergeScoresAction.call(NAME_SCORES, COORDINATES_SCORES)).thenReturn(FINAL_SCORES);
 
-    assertThat(command.call(SEARCH_TERM, null, LNG)).isEqualTo(SUGGESTIONS);
+    assertThat(command.call(SEARCH_TERM, null, LNG, null, null)).isEqualTo(SUGGESTIONS);
 
     verify(CITIES, times(2)).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
@@ -152,7 +172,7 @@ public class SuggestCitiesCommandTests {
             .stream()
             .map(entry -> ImmutableSuggestion.of(entry.getKey(), entry.getValue()))
             .collect(ImmutableList.toImmutableList());
-    assertThat(command.call(SEARCH_TERM, null, null)).isEqualTo(expected);
+    assertThat(command.call(SEARCH_TERM, null, null, null, null)).isEqualTo(expected);
 
     verify(CITIES).stream();
     verify(findCandidateCitiesAction).call(SEARCH_TERM);
