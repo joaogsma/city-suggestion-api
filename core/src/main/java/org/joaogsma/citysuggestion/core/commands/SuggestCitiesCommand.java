@@ -41,6 +41,7 @@ public class SuggestCitiesCommand {
           .entrySet()
           .stream()
           .map(entry -> ImmutableSuggestion.of(entry.getKey(), entry.getValue()))
+          .sorted(Comparator.comparingDouble(Suggestion::score).reversed())
           .collect(ImmutableList.toImmutableList());
     }
 
